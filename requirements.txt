@@ -1,0 +1,6 @@
+gradio
+ultralytics
+opencv-python-headless
+numpy
+ncnn
+openvino

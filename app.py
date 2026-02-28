@@ -24,16 +24,17 @@ with gr.Blocks() as demo:
         with gr.Column():
             output_video = gr.Video(label="Heatmap Output")
             benchmark_md = gr.Markdown()
+            nb_detections=gr.Markdown()
 
     process_btn_NCNN.click(
         fn=lambda video, fs:process_heatmap("NCNN",video,fs), #this is done because the inputs doesn't accept strings
         inputs=[input_video, frame_skip_slider],
-        outputs=[output_video, benchmark_md],
+        outputs=[output_video, benchmark_md,nb_detections],
     )
     process_btn_openvino.click(
         fn=lambda video, fs:process_heatmap("openvino",video,fs),
         inputs=[input_video, frame_skip_slider],
-        outputs=[output_video, benchmark_md],
+        outputs=[output_video, benchmark_md,nb_detections],
     )
 
 if __name__ == "__main__":

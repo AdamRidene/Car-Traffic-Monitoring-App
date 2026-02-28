@@ -117,6 +117,7 @@ def process_heatmap(selected_model,video_path, frame_skip=2):
         last_result_frame = None
         n_infers = 0
         t_sum = 0.0
+        total_detections = 0
 
         while cap.isOpened():
             success, im0 = cap.read()
@@ -130,6 +131,12 @@ def process_heatmap(selected_model,video_path, frame_skip=2):
 
                 last_result_frame = results.plot_im
                 n_infers += 1
+                try:
+                    if getattr(heatmap, 'clss', None) is not None:
+                        current_frame_count = sum(1 for cls in heatmap.clss if int(cls) in [2, 5, 7])
+                        total_detections += current_frame_count
+                except Exception:
+                    pass
 
             if last_result_frame is not None:
                 out.write(last_result_frame)
@@ -150,8 +157,8 @@ def process_heatmap(selected_model,video_path, frame_skip=2):
             )
         else:
             bench_md = "## Benchmark NCNN\n\nNo frames were processed."
-
-        return output_path, bench_md
+        nb_detections=f"## {total_detections} vehicule"
+        return output_path, bench_md,nb_detections
     else:
         export_to_openvino_int8()
         openvino_model=YOLO(OPENVINO_INT8_DIR)
@@ -182,6 +189,7 @@ def process_heatmap(selected_model,video_path, frame_skip=2):
         last_result_frame = None
         n_infers = 0
         t_sum = 0.0
+        total_detections=0
 
         while cap.isOpened():
             success, im0 = cap.read()
@@ -195,6 +203,12 @@ def process_heatmap(selected_model,video_path, frame_skip=2):
 
                 last_result_frame = results.plot_im
                 n_infers += 1
+                try:
+                    if getattr(heatmap, 'clss', None) is not None:
+                        current_frame_count = sum(1 for cls in heatmap.clss if int(cls) in [2, 5, 7])
+                        total_detections += current_frame_count
+                except Exception:
+                    pass
 
             if last_result_frame is not None:
                 out.write(last_result_frame)
@@ -215,5 +229,6 @@ def process_heatmap(selected_model,video_path, frame_skip=2):
             )
         else:
             bench_md = "## Benchmark (OPENVINO INT8)\n\nNo frames were processed."
+        nb_detections=f"## {total_detections} vehicule "
 
-        return output_path, bench_md
+        return output_path, bench_md,nb_detections
